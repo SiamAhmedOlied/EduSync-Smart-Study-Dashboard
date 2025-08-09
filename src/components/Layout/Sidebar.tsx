@@ -102,23 +102,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, onToggle }) => {
       {/* Footer */}
       <div className="p-2 border-t border-sidebar-border space-y-2">
         {/* Theme Toggle */}
-        <div className={`flex items-center ${isExpanded ? 'justify-between px-3' : 'justify-center'} h-10`}>
-          {isExpanded && (
-            <div className="flex items-center gap-2">
-              <Sun className="h-4 w-4" />
-              <span className="text-sm">Theme</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            {!isExpanded && <Moon className="h-4 w-4" />}
-            <Switch
-              checked={theme === 'dark'}
-              onCheckedChange={toggleTheme}
-              className="data-[state=checked]:bg-primary"
-            />
-            {isExpanded && <Moon className="h-4 w-4" />}
-          </div>
-        </div>
+{isExpanded && (
+  <div className="flex items-center justify-between px-3 h-10">
+    <div className="flex items-center gap-2">
+      <Sun className="h-4 w-4" />
+      <span className="text-sm">Theme</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <Switch
+        checked={theme === 'dark'}
+        onCheckedChange={toggleTheme}
+        className="data-[state=checked]:bg-primary"
+      />
+      <Moon className="h-4 w-4" />
+    </div>
+  </div>
+)}
 
         {/* Logout */}
         <Button
