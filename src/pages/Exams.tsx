@@ -16,9 +16,9 @@ interface Exam {
   id: string;
   subject: string;
   date: string;
-  time?: string;
-  location?: string;
-  reminders: any[];
+  time?: string | null;
+  location?: string | null;
+  reminders: any;
   created_at: string;
   updated_at: string;
 }
