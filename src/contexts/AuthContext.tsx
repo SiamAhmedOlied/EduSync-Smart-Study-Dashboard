@@ -28,33 +28,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Set up auth state listener first
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user && event === 'SIGNED_IN') {
-          // Create or update user profile
-          const { error } = await supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      if (session?.user && event === 'SIGNED_IN') {
+        setTimeout(() => {
+          supabase
             .from('users')
-            .upsert({
-              id: session.user.id,
-              email: session.user.email || '',
-              name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || '',
-              clerk_user_id: session.user.id
-            }, { 
-              onConflict: 'clerk_user_id',
-              ignoreDuplicates: false 
+            .upsert(
+              {
+                id: session.user!.id,
+                email: session.user!.email || '',
+                name:
+                  session.user!.user_metadata?.name ||
+                  session.user!.email?.split('@')[0] ||
+                  '',
+                clerk_user_id: session.user!.id,
+              },
+              {
+                onConflict: 'clerk_user_id',
+                ignoreDuplicates: false,
+              }
+            )
+            .then(({ error }) => {
+              if (error) {
+                console.error('Error creating/updating user profile:', error);
+              }
             });
-          
-          if (error) {
-            console.error('Error creating/updating user profile:', error);
-          }
-        }
-        
-        setLoading(false);
+        }, 0);
       }
-    );
+    });
 
     // Then check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
